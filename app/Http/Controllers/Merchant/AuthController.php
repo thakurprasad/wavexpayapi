@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\UserMerchant;
-
+use App\Models\Merchant;
 use Illuminate\Support\Str;
 use DB;
 
@@ -34,25 +34,44 @@ class AuthController extends Controller
         $this->validate($request, [
             'email' => 'required|string|email',
             'password' => 'required|string',
+            'merchant_salt' => 'required|string',
         ]);
         $remember_me = $request->has('remember') ? true : false;
 		try{
 			$expires_at = Carbon::now()->addWeeks(1);
 			$ttl = 10080;
 
+            $merchant_salt = $request->merchant_salt;
+            $merchant_info = Merchant::select('id','merchant_name','contact_name','contact_phone')->where('access_salt',$merchant_salt)->where('status','Active')->first();
+            if($merchant_info){
+                $credentials = request(['email', 'password']);
+
+                $credentials = array_merge($credentials, ['merchant_id'=>$merchant_info->id]);
+                // Check Magic Password
 
 
-			$credentials = request(['email', 'password']);
+                if (!$token = auth()->guard('merchant')->setTTL($ttl)->attempt($credentials)) {
+                    return response()->json(['status' => 'error','message' => trans('auth.failed')], 401);
+                }
 
-			// Check Magic Password
+                $merchant = auth()->guard('merchant')->user();
 
 
-			if (!$token = auth()->guard('merchant')->setTTL($ttl)->attempt($credentials)) {
-				return response()->json(['status' => 'error','message' => trans('auth.failed')], 401);
-			}
+                return response()->json([
+                            'access_token' => $token,
+                            'token_type' => 'Bearer',
+                            'expires_at' => Carbon::parse(
+                                $expires_at
+                            )->toDateTimeString(),
+                            'merchant'=>$merchant,
+                            'merchant_info'=>$merchant_info,
+                            'message' => trans('auth.success'),
+                            'status' => 'success',
+                        ]);
+            }else{
+                return response()->json(['status' => 'error','message' => 'Authntication failed'], 409);
+            }
 
-			$merchant = auth()->guard('merchant')->user();
-			return $this->respondWithToken($token);
 
 		} catch (\Exception $e) {
 			//dd($e);

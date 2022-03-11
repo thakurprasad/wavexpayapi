@@ -79,7 +79,9 @@ class UserMerchantController extends Controller
     {
         try{
             $userid = auth()->guard('merchant')->user()->id;
-            $data= UserMerchant::find($userid);
+            $data = UserMerchant::select('wxp_merchant_users.id','wxp_merchant_users.merchant_id','wxp_merchant_users.name','wxp_merchant_users.email','merchant_name','contact_name','contact_phone')
+                        ->leftJoin('wxp_merchants','wxp_merchants.id','wxp_merchant_users.merchant_id')
+                        ->where('wxp_merchant_users.id',$userid)->first();
 
             return response()->json(['data' => $data ], 200);
 
