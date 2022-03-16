@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Notifications\UpdatePassword;
-use App\Models\Batch;
 use App\Models\UserMerchant;
 use Illuminate\Support\Facades\Date;
 

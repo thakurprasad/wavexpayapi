@@ -36,8 +36,18 @@ $router->group(['prefix' => 'api/merchants'], function ($router) {
     $router->get('getprofile', 'Merchant\UserMerchantController@getProfile');
     $router->post('profile/update', 'Merchant\UserMerchantController@profile_update');
 
+    //Settings
+    $router->get('apikey', 'Merchant\SettingController@apikey');
+
     //Password Reset
     $router->post('password/create', 'Merchant\PasswordResetController@create');
+
+    //Customer
+    $router->get('customers', 'Merchant\CustomerController@index');
+    $router->post('customers', 'Merchant\CustomerController@store');
+    $router->get('customers/{id}', 'Merchant\CustomerController@show');
+    $router->put('customers/{id}', 'Merchant\CustomerController@update');
+    $router->delete('customers/{id}', 'Merchant\CustomerController@destroy');
 });
 
 $router->group(['prefix' => 'api'], function ($router) {
