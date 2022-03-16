@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\UserMerchant;
 use App\Models\Merchant;
+use App\Models\MerchantKey;
 use Illuminate\Support\Str;
 use DB;
 
@@ -57,6 +58,10 @@ class AuthController extends Controller
                 $merchant = auth()->guard('merchant')->user();
 
 
+
+
+                $api_keys = MerchantKey::select('api_title','api_key','created_at')->where('merchnat_id',$merchant_info->id)->get();
+
                 return response()->json([
                             'access_token' => $token,
                             'token_type' => 'Bearer',
@@ -65,6 +70,7 @@ class AuthController extends Controller
                             )->toDateTimeString(),
                             'merchant'=>$merchant,
                             'merchant_info'=>$merchant_info,
+                            'api_keys'=>$api_keys,
                             'message' => trans('auth.success'),
                             'status' => 'success',
                         ]);

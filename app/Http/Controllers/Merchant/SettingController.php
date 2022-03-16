@@ -26,7 +26,7 @@ class SettingController extends Controller
 
             $data = MerchantKey::select('api_title','api_key','created_at')->where('merchnat_id',$merchant_id)->get();
 
-            return response()->json(['vendor' => $data,'message' => 'Successfully fetch the data!' ], 200);
+            return response()->json(['data' => $data,'message' => 'Successfully fetch the data!' ], 200);
         }catch (\Exception $e) {
             //return error message
             return response()->json(['message' => 'No record found!'], 409);
