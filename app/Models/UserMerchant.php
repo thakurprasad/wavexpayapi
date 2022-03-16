@@ -9,7 +9,6 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
@@ -18,7 +17,6 @@ class UserMerchant extends Model implements AuthenticatableContract, Authorizabl
 {
     use Authenticatable, Authorizable;
     use Notifiable;
-    use HasRoles;
 
     protected $table = 'wxp_merchant_users';
 
