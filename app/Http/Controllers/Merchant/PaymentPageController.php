@@ -57,7 +57,7 @@ class PaymentPageController extends Controller
             return response()->json(['created_id'=>$created_id,'message' => 'Data created successfully!'], 201);
         } catch (\Exception $e) {
             //return error message
-            return response()->json(['message' => 'Failed to create Data!'], 409);
+            return response()->json(['message' => $e.'Failed to create Data!'], 409);
         }
     }
 
