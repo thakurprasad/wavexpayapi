@@ -3,9 +3,9 @@ namespace App\Http\Controllers\Merchant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\Customer;
+use App\Models\PaymentPage;
 
-class UserMerchantController extends Controller
+class PaymentPageController extends Controller
 {
     /**
      * Instantiate a new ClassController instance.
@@ -23,23 +23,17 @@ class UserMerchantController extends Controller
         $merchantid = auth()->guard('merchant')->user()->id;
         try{
             $sort = ($request->get('sort')=='DESC')?'DESC':'ASC';
-            $orderBy = ($request->get('orderby'))?$request->get('orderby'):'customer_id';
+            $orderBy = ($request->get('orderby'))?$request->get('orderby'):'page_title';
             $offset = ($request->get('offset'))?$request->get('offset'):'15';
 
-            $data = Customer::where(function($query) use ($request) {
-                if ($request->get('customer_id'))
-                    $query->where('customer_id', 'like', $request->get('customer_id')."%");
-                if ($request->get('name'))
-                    $query->where('name', 'like', $request->get('name')."%");
-                if ($request->get('contact'))
-                    $query->where('contact', 'like', "%".$request->get('contact')."%");
-                if ($request->get('gstin'))
-                    $query->where('gstin', 'like', "%".$request->get('gstin')."%");
-                if ($request->get('notes'))
-                    $query->where('notes', 'like', "%".$request->get('notes')."%");
-
+            $data = PaymentPage::where(function($query) use ($request) {
+                if ($request->get('page_title'))
+                    $query->where('page_title', 'like', $request->get('page_title')."%");
+                if ($request->get('status'))
+                    $query->where('status', $request->get('status'));
             })
-            ->where('merchant_id',$request->get('merchant_id'))
+            ->where('merchant_id',$merchantid
+            )
             ->orderBy($orderBy,$sort)->paginate($offset);
             return response()->json(['data' => $data,'count'=> count($data),'message' => 'Successfully fetch data!' ], 200);
         }catch (\Exception $e) {
@@ -50,17 +44,15 @@ class UserMerchantController extends Controller
 
     public function store(Request $request)
     {
+        $merchantid = auth()->guard('merchant')->user()->id;
         $input = $request->all();
         $this->validate($request, [
-            'merchant_id' => 'required|numeric',
-            'customer_id' => 'required|string|min:2|max:150',
-            'name' => 'required|string|min:3|max:50',
-            'contact' => 'required|string|min:13|max:15',
-            'email' => 'required|email',
+            'template_id' => 'required|numeric',
+            'page_title' => 'required|string|min:3|max:50',
         ]);
 
         try{
-            $data = Customer::create($input);
+            $data = PaymentPage::create($input);
             $created_id = $data->id;
             return response()->json(['created_id'=>$created_id,'message' => 'Data created successfully!'], 201);
         } catch (\Exception $e) {
@@ -72,7 +64,7 @@ class UserMerchantController extends Controller
     public function show($id)
     {
         try{
-            $data = Customer::findOrFail($id);
+            $data = PaymentPage::findOrFail($id);
 
             return response()->json(['data' => $data,'message' => 'Successfully fetch the data!' ], 200);
         }catch (\Exception $e) {
@@ -81,25 +73,37 @@ class UserMerchantController extends Controller
         }
     }
 
-    public function update(Request $request, int  $id, Customer $data)
+    public function update(Request $request, int  $id, PaymentPage $data)
     {
         $input = $request->all();
         $this->validate($request, [
-            'merchant_id' => 'required|numeric',
-            'customer_id' => 'required|string|min:2|max:150',
-            'name' => 'required|string|min:3|max:50',
-            'contact' => 'required|string|min:13|max:15',
-            'email' => 'required|email',
+            'template_id' => 'required|numeric',
+            'page_title' => 'required|string|min:3|max:50',
         ]);
 
         try{
-            $data       = Customer::find($id);
-            $data->customer_id      = $input['customer_id'];
-            $data->name             = $input['name'];
-            $data->email            = $input['email'];
-            $data->contact          = $input['contact'];
-            $data->gstin            = $input['gstin'];
-            $data->notes            = $input['notes'];
+            $data       = PaymentPage::find($id);
+            $data->template_id      = $input['template_id'];
+            $data->page_title       = $input['page_title'];
+            $data->page_content     = $input['page_content'];
+            $data->status           = $input['status'];
+            $data->fb_link          = $input['fb_link'];
+            $data->twitter_link     = $input['twitter_link'];
+
+            $data->whatsapp         = $input['whatsapp'];
+            $data->support_email    = $input['support_email'];
+            $data->support_phone    = $input['support_phone'];
+            $data->term_conditions  = $input['term_conditions'];
+            $data->payment_form_json = $input['payment_form_json'];
+            $data->custom_url       = $input['custom_url'];
+            $data->theme            = $input['theme'];
+            $data->is_page_expiry   = $input['is_page_expiry'];
+
+            $data->expiry_date      = $input['expiry_date'];
+            $data->successful_custom_message   = $input['successful_custom_message'];
+            $data->successful_redirect_url   = $input['successful_redirect_url'];
+            $data->facebook_pixel   = $input['facebook_pixel'];
+            $data->google_analytics   = $input['google_analytics'];
             $data->save();
 
             return response()->json(['data'=>$data,'message' => 'Successfully updated the data!' ], 200);
@@ -118,7 +122,7 @@ class UserMerchantController extends Controller
     public function destroy($id)
     {
         try{
-            $data = Customer::findOrFail($id);
+            $data = PaymentPage::findOrFail($id);
             $data->delete();
 
             return response()->json(['message' => 'Data deleted successfully!' ], 200);

@@ -36,11 +36,22 @@ $router->group(['prefix' => 'api/merchants'], function ($router) {
     $router->get('getprofile', 'Merchant\UserMerchantController@getProfile');
     $router->post('profile/update', 'Merchant\UserMerchantController@profile_update');
 
+    //Password Reset
+    $router->post('password/create', 'Merchant\PasswordResetController@create');
+
     //Settings
     $router->get('apikey', 'Merchant\SettingController@apikey');
 
-    //Password Reset
-    $router->post('password/create', 'Merchant\PasswordResetController@create');
+    //Templates
+    $router->get('payment-templates', 'Merchant\PaymentTemplateController@index');
+    $router->get('payment-templates/{id}', 'Merchant\PaymentTemplateController@show');
+
+    //PaymentPage
+    $router->get('payment-pages', 'Merchant\PaymentPageController@index');
+    $router->post('payment-pages', 'Merchant\PaymentPageController@store');
+    $router->get('payment-pages/{id}', 'Merchant\PaymentPageController@show');
+    $router->put('payment-pages/{id}', 'Merchant\PaymentPageController@update');
+    $router->delete('payment-pages/{id}', 'Merchant\PaymentPageController@destroy');
 
     //Customer
     $router->get('customers', 'Merchant\CustomerController@index');
