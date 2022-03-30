@@ -24,8 +24,9 @@ class PaymentTemplateController extends Controller
         try{
             $sort = ($request->get('sort')=='DESC')?'DESC':'ASC';
             $orderBy = ($request->get('orderby'))?$request->get('orderby'):'title';
+            $payment_type = ($request->get('payment_type'))?$request->get('payment_type'):'Page';
 
-            $data = PaymentTemplate::where('status','Active')
+            $data = PaymentTemplate::where('status','Active')->where('payment_type',$payment_type)
             ->orderBy($orderBy,$sort)->get();
             return response()->json(['data' => $data,'count'=> count($data),'message' => 'Successfully fetch data!' ], 200);
         }catch (\Exception $e) {

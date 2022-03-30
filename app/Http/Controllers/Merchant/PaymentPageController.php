@@ -98,8 +98,11 @@ class PaymentPageController extends Controller
             $data->custom_url       = $input['custom_url'];
             $data->theme            = $input['theme'];
             $data->is_page_expiry   = $input['is_page_expiry'];
-
-            $data->expiry_date      = $input['expiry_date'];
+            if($input['is_page_expiry']==1){
+                $data->expiry_date      = $input['expiry_date'];
+            }else{
+                $data->expiry_date      = null;
+            }
             $data->successful_custom_message   = $input['successful_custom_message'];
             $data->successful_redirect_url   = $input['successful_redirect_url'];
             $data->facebook_pixel   = $input['facebook_pixel'];
@@ -109,7 +112,7 @@ class PaymentPageController extends Controller
             return response()->json(['data'=>$data,'message' => 'Successfully updated the data!' ], 200);
         }catch (\Exception $e) {
             //return error message
-            return response()->json(['message' => 'Data Update Failed!'], 409);
+            return response()->json(['message' => $e.'Data Update Failed!'], 409);
         }
     }
 
