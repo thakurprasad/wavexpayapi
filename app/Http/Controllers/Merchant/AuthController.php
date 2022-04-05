@@ -60,7 +60,7 @@ class AuthController extends Controller
 
 
 
-                $api_keys = MerchantKey::select('api_title','api_key','created_at')->where('merchnat_id',$merchant_info->id)->get();
+                $api_keys = MerchantKey::select('api_title','api_key','api_secret','created_at')->where('merchnat_id',$merchant_info->id)->get();
 
                 return response()->json([
                             'access_token' => $token,
