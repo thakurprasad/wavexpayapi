@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\UserMerchant;
 use App\Models\Merchant;
+use App\Models\MerchantKey;
 use Illuminate\Support\Str;
 use DB;
 
@@ -25,6 +26,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        
 		// Trim inputs and store
 		$email = trim($request->input('email'));
 		// Overwrite inputs
@@ -43,6 +45,7 @@ class AuthController extends Controller
 
             $merchant_salt = $request->merchant_salt;
             $merchant_info = Merchant::select('id','merchant_name','contact_name','contact_phone')->where('access_salt',$merchant_salt)->where('status','Active')->first();
+            
             if($merchant_info){
                 $credentials = request(['email', 'password']);
 
@@ -57,6 +60,9 @@ class AuthController extends Controller
                 $merchant = auth()->guard('merchant')->user();
 
 
+
+                $api_keys = MerchantKey::select('api_title','api_key','api_secret','created_at')->where('merchnat_id',$merchant_info->id)->get();
+
                 return response()->json([
                             'access_token' => $token,
                             'token_type' => 'Bearer',
@@ -65,6 +71,7 @@ class AuthController extends Controller
                             )->toDateTimeString(),
                             'merchant'=>$merchant,
                             'merchant_info'=>$merchant_info,
+                            'api_keys'=>$api_keys,
                             'message' => trans('auth.success'),
                             'status' => 'success',
                         ]);

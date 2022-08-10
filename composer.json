@@ -5,15 +5,13 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.2|^8.0",
+        "php": "^7.4|^8.0",
         "barryvdh/laravel-dompdf": "^0.9.0",
         "illuminate/mail": "^8.62",
         "illuminate/notifications": "^8.62",
         "intervention/image": "^2.6",
         "laravel/lumen-framework": "^8.0",
         "league/flysystem": "^1.1",
-		"league/flysystem-aws-s3-v3": "~1.0",
-        "owen-it/laravel-auditing": "^10.0",
         "spatie/laravel-permission": "^5.1",
         "tymon/jwt-auth": "^1.0"
     },

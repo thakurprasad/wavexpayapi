@@ -28,3 +28,16 @@ function getSystemInfo(){
 	$data = \DB::table('wxp_app_settings')->first();
 	return $data;
 }
+
+function getMerchantId($user_id)
+{
+    $merchantinfo = \DB::table('wxp_merchant_users')->select('merchant_id')->where('id',$user_id)->first();
+
+    return $merchantinfo->merchant_id;
+}
+
+function getMerchantInfo($merchant_id)
+{
+    $merchantinfo = \DB::table('wxp_merchants')->select('merchant_name','contact_name','contact_phone')->where('id',$merchant_id)->first();
+    return $merchantinfo;
+}
