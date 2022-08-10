@@ -58,9 +58,7 @@ class AuthController extends Controller
                 }
 
                 $merchant = auth()->guard('merchant')->user();
-
-
-
+                
                 $api_keys = MerchantKey::select('api_title','api_key','api_secret','created_at')->where('merchnat_id',$merchant_info->id)->get();
 
                 return response()->json([
