@@ -26,25 +26,23 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        
-		// Trim inputs and store
-		$email = trim($request->input('email'));
-		// Overwrite inputs
-		request()->merge(['email'=>$email]);
+        // Trim inputs and store
+        $email = trim($request->input('email'));
+        // Overwrite inputs
+        request()->merge(['email'=>$email]);
 
-		//validate incoming request
+        //validate incoming request
         $this->validate($request, [
             'email' => 'required|string|email',
             'password' => 'required|string',
             'merchant_salt' => 'required|string',
         ]);
         $remember_me = $request->has('remember') ? true : false;
-		try{
-			$expires_at = Carbon::now()->addWeeks(1);
-			$ttl = 10080;
-
+        try{
+            $expires_at = Carbon::now()->addWeeks(1);
+            $ttl = 10080;
             $merchant_salt = $request->merchant_salt;
-            $merchant_info = Merchant::select('id','merchant_name','contact_name','contact_phone')->where('access_salt',$merchant_salt)->where('status','Active')->first();
+             $merchant_info = Merchant::select('id','merchant_name','contact_name','contact_phone')->where('access_salt',$merchant_salt)->where('status','Active')->first();
             
             if($merchant_info){
                 $credentials = request(['email', 'password']);
@@ -78,8 +76,8 @@ class AuthController extends Controller
             }
 
 
-		} catch (\Exception $e) {
-			//dd($e);
+        } catch (\Exception $e) {
+            //dd($e);
             //return error message
             return response()->json(['status' => 'error','message' => $e], 409);
         }
@@ -131,9 +129,9 @@ class AuthController extends Controller
     }
 
 
-	protected function respondWithToken($token)
+    protected function respondWithToken($token)
     {
-		try{
+        try{
             $expires_at = Carbon::now()->addWeeks(1);
             $ttl = 10080;
 
@@ -146,10 +144,10 @@ class AuthController extends Controller
                         'message' => trans('auth.success'),
                         'status' => 'success',
                     ]);
-		}
-		catch(\Exception $e){
-			return response()->json(['msg'=>$e->getMessage()]);
-		}
+        }
+        catch(\Exception $e){
+            return response()->json(['msg'=>$e->getMessage()]);
+        }
     }
 
 
