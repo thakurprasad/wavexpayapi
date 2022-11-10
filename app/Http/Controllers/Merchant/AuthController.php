@@ -11,7 +11,7 @@ use App\Models\MerchantKey;
 use Illuminate\Support\Str;
 use DB;
 
-use App\Notifications\PasswordResetMismatch;
+use App\Notifications\PasswordResetMismatch; 
 use App\Notifications\PasswordResetRequest;
 use App\Notifications\PasswordResetSuccess;
 
@@ -57,7 +57,12 @@ class AuthController extends Controller
 
                 $merchant = auth()->guard('merchant')->user();
                 
-                $api_keys = MerchantKey::select('api_title','api_key','api_secret','created_at')->where('merchnat_id',$merchant_info->id)->get();
+                if($request->mode=='test'){
+                    $api_keys = MerchantKey::select('api_title','test_api_key','test_api_secret','created_at')->where('merchnat_id',$merchant_info->id)->get();
+                }else{
+                    $api_keys = MerchantKey::select('api_title','live_api_key','live_api_secret','created_at')->where('merchnat_id',$merchant_info->id)->get();
+                }
+                
 
                 return response()->json([
                             'access_token' => $token,
