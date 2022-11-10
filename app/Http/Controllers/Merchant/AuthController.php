@@ -11,7 +11,7 @@ use App\Models\MerchantKey;
 use Illuminate\Support\Str;
 use DB;
 
-use App\Notifications\PasswordResetMismatch;
+use App\Notifications\PasswordResetMismatch; 
 use App\Notifications\PasswordResetRequest;
 use App\Notifications\PasswordResetSuccess;
 
