@@ -62,12 +62,12 @@ class AuthController extends Controller
                     $api_keys = MerchantKey::select('api_title',
                         'live_api_key as api_key',
                         'live_api_secret as api_secret',
-                        'created_at')->where('merchnat_id',$merchant_info->id)->first();
+                        'created_at')->where('merchant_id',$merchant_info->id)->first();
                 }else{
                       $api_keys = MerchantKey::select('api_title',
                         'test_api_key as api_key',
                         'test_api_secret as api_secret',
-                        'created_at')->where('merchnat_id',$merchant_info->id)->first();
+                        'created_at')->where('merchant_id',$merchant_info->id)->first();
                 }
                 
 
