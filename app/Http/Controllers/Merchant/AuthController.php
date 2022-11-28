@@ -18,12 +18,7 @@ use App\Notifications\PasswordResetSuccess;
 class AuthController extends Controller
 {
 
-     /**
-     * Get a JWT via given credentials.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
+  
     public function login(Request $request)
     {
         // Trim inputs and store
